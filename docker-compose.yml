@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api:
+    image: hashicorp/http-echo
+    command: -text="Monitoring Service Active" -listen=:8080
+    networks:
+      - monitoring-net
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    networks:
+      - monitoring-net
+
+networks:
+  monitoring-net:
+    driver: bridge
